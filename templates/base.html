@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}台区负荷预测与异常用电预警系统{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">⚡</span>
+        <div>
+          <strong>台区负荷智能分析</strong>
+          <small>LOAD FORECAST &amp; ANOMALY MONITOR</small>
+        </div>
+      </div>
+      <div class="topbar-meta">
+        <span class="dot"></span>
+        配电台区 · 96 点负荷 · 模拟数据演示
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <span>数据为模拟生成，仅用于方法演示，不代表真实电网数据。</span>
+    <span>Python · Flask · SQLite · scikit-learn · ECharts</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+  <script>
+    if (!window.echarts) {
+      document.write('<script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.5.1/echarts.min.js"><\/script>');
+    }
+  </script>
+  <script>
+    if (!window.echarts) {
+      document.write('<script src="https://unpkg.com/echarts@5.5.1/dist/echarts.min.js"><\/script>');
+    }
+  </script>
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

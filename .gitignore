@@ -1,0 +1,23 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# 生成的数据和模型
+data/*.csv
+data/*.db
+data/*.db-*
+models/*.joblib
+models/*.json
+
+# 本地截图/录屏/浏览器配置
+screenshot*.png
+docs/screenshot*.png
+edge-profile/
+*.log
+
+# 编辑器
+.vscode/
+.idea/
+.DS_Store

@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <p class="eyebrow">GRID LOAD INTELLIGENCE</p>
+    <h1>台区短期负荷预测<br><span>与异常用电预警</span></h1>
+    <p class="hero-desc">
+      基于 96 点负荷数据，预测未来一天负荷曲线，识别异常用电点，
+      为配变重过载预警、需求侧响应和反窃电排查提供数据参考。
+    </p>
+  </div>
+  <div class="hero-side">
+    <div class="date-card">
+      <span class="date-label">最新数据日期</span>
+      <strong id="latestDate">--</strong>
+      <span class="date-sub" id="latestWeekday">数据加载中</span>
+    </div>
+  </div>
+</section>
+
+<section class="toolbar">
+  <div class="toolbar-left">
+    <label for="districtSelect">选择台区</label>
+    <select id="districtSelect" aria-label="选择台区"></select>
+    <span class="type-pill" id="districtType">--</span>
+  </div>
+  <div class="toolbar-right">
+    <span class="status-dot" id="statusDot"></span>
+    <span id="statusText">数据加载中...</span>
+    <button id="refreshBtn" class="btn" type="button">刷新数据</button>
+  </div>
+</section>
+
+<section class="kpi-grid">
+  <article class="kpi-card">
+    <span class="kpi-label">今日最大负荷</span>
+    <strong class="kpi-value" id="kpiMax">--</strong>
+    <span class="kpi-unit">kW</span>
+    <span class="kpi-note">反映配变短时重过载风险</span>
+  </article>
+  <article class="kpi-card">
+    <span class="kpi-label">今日平均负荷</span>
+    <strong class="kpi-value" id="kpiAvg">--</strong>
+    <span class="kpi-unit">kW</span>
+    <span class="kpi-note">用于观察台区整体负载水平</span>
+  </article>
+  <article class="kpi-card">
+    <span class="kpi-label">今日用电量</span>
+    <strong class="kpi-value" id="kpiEnergy">--</strong>
+    <span class="kpi-unit">kWh</span>
+    <span class="kpi-note">按 96 点负荷积分估算</span>
+  </article>
+  <article class="kpi-card kpi-alert">
+    <span class="kpi-label">近 7 天异常点</span>
+    <strong class="kpi-value" id="kpiAnomaly">--</strong>
+    <span class="kpi-unit">个</span>
+    <span class="kpi-note">需结合业务规则人工复核</span>
+  </article>
+</section>
+
+<section class="chart-grid">
+  <article class="panel">
+    <header class="panel-head">
+      <div>
+        <h2>近 7 天负荷趋势</h2>
+        <p>日平均负荷与日最大负荷</p>
+      </div>
+      <span class="panel-tag">TREND</span>
+    </header>
+    <div id="trendChart" class="chart"></div>
+  </article>
+
+  <article class="panel">
+    <header class="panel-head">
+      <div>
+        <h2>台区用电量排名</h2>
+        <p id="rankingDate">最新数据日</p>
+      </div>
+      <span class="panel-tag">RANKING</span>
+    </header>
+    <div id="rankingChart" class="chart"></div>
+  </article>
+</section>
+
+<section class="panel panel-wide">
+  <header class="panel-head">
+    <div>
+      <h2>预测日实际负荷 vs 模型预测</h2>
+      <p id="forecastMeta">96 点负荷曲线 · 测试集最后一天</p>
+    </div>
+    <div class="panel-head-actions">
+      <div class="segmented" id="forecastTabs">
+        <button class="seg-btn active" data-view="evaluation" type="button">测试日对比</button>
+        <button class="seg-btn" data-view="next" type="button">下一天预测</button>
+      </div>
+      <span class="panel-tag">FORECAST</span>
+    </div>
+  </header>
+  <div id="forecastChart" class="chart chart-tall"></div>
+</section>
+
+<section class="bottom-grid">
+  <article class="panel">
+    <header class="panel-head">
+      <div>
+        <h2>异常用电清单</h2>
+        <p>最近 30 条，按时间倒序</p>
+      </div>
+      <span class="panel-tag panel-tag-warn">ALERT</span>
+    </header>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>日期</th>
+            <th>时刻</th>
+            <th>实际负荷</th>
+            <th>期望负荷</th>
+            <th>偏差</th>
+            <th>等级</th>
+          </tr>
+        </thead>
+        <tbody id="anomalyBody">
+          <tr><td colspan="6" class="empty">数据加载中...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </article>
+
+  <aside class="panel model-panel">
+    <header class="panel-head">
+      <div>
+        <h2>模型说明</h2>
+        <p>随机森林 · 每个台区独立建模</p>
+      </div>
+      <span class="panel-tag">MODEL</span>
+    </header>
+
+    <div class="metric-list">
+      <div class="metric-row">
+        <span>测试集 MAE</span>
+        <strong id="metricMae">--</strong>
+      </div>
+      <div class="metric-row">
+        <span>测试集 MAPE</span>
+        <strong id="metricMape">--</strong>
+      </div>
+      <div class="metric-row">
+        <span>“昨天同时刻”基线 MAPE</span>
+        <strong id="metricBaseline">--</strong>
+      </div>
+      <div class="metric-row">
+        <span>异常检测精确率（全局）</span>
+        <strong id="metricPrecision">--</strong>
+      </div>
+      <div class="metric-row">
+        <span>异常检测召回率（全局）</span>
+        <strong id="metricRecall">--</strong>
+      </div>
+    </div>
+
+    <div class="model-note">
+      <p><b>特征：</b>时刻、星期、周末、温度、昨天/上周同时刻负荷、滑动平均。</p>
+      <p><b>切分：</b>前 50 天训练，后 10 天测试，避免用未来数据预测过去。</p>
+      <p><b>异常：</b>同时段 7 天中位数作为期望值，结合稳健 3σ 与偏差阈值筛查。</p>
+      <p class="muted">模拟数据中异常注入较明显，指标仅用于验证流程。</p>
+    </div>
+  </aside>
+</section>
+{% endblock %}
