@@ -3,6 +3,9 @@
 > 一个适合电网校招简历的完整 MVP：**Python + Flask + SQLite + scikit-learn + ECharts**。  
 > 不依赖硬件、不依赖真实用户数据，一台普通电脑即可跑通。
 
+<!-- 运行后截图放到 docs/screenshots/dashboard.png，并取消下面这行注释 -->
+<!-- ![看板截图](docs/screenshots/dashboard.png) -->
+
 ## 1. 项目简介
 
 配电台区需要提前掌握负荷变化，也需要发现异常用电行为。  

@@ -12,8 +12,8 @@ models/*.joblib
 models/*.json
 
 # 本地截图/录屏/浏览器配置
-screenshot*.png
-docs/screenshot*.png
+/screenshot*.png
+/录屏*.mp4
 edge-profile/
 *.log
 
