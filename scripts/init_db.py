@@ -86,9 +86,9 @@ def main() -> None:
     districts_csv = DATA_DIR / "districts.csv"
 
     if not load_csv.exists() or not districts_csv.exists():
-        raise SystemExit("找不到数据文件，请先运行：python data/generate_data.py")
+        raise SystemExit("Data files not found. Run: python data/generate_data.py")
 
-    print("正在读取 CSV ...")
+    print("Reading CSV ...")
     load_df = pd.read_csv(load_csv, encoding="utf-8-sig")
     districts_df = pd.read_csv(districts_csv, encoding="utf-8-sig")
 
@@ -97,7 +97,7 @@ def main() -> None:
     load_df = load_df.drop_duplicates(
         subset=["district_id", "date", "time_index"], keep="first"
     )
-    print(f"去重：{before:,} -> {len(load_df):,} 行")
+    print(f"Deduplicate: {before:,} -> {len(load_df):,} rows")
 
     conn = sqlite3.connect(DB_PATH)
     try:
@@ -150,10 +150,10 @@ def main() -> None:
         conn.close()
 
     print("=" * 60)
-    print("数据库初始化完成")
-    print(f"数据库文件：{DB_PATH}")
-    print(f"台区记录：{district_count}")
-    print(f"负荷记录：{load_count:,}")
+    print("Database initialized")
+    print(f"DB file: {DB_PATH}")
+    print(f"Districts: {district_count}")
+    print(f"Load rows: {load_count:,}")
     print("=" * 60)
 
 

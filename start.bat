@@ -17,45 +17,40 @@ if errorlevel 1 (
     exit /b 1
 )
 
-if not exist ".venv\Scripts\python.exe" (
-    echo [1/5] Creating virtual environment .venv ...
-    python -m venv .venv
+echo [1/4] Checking Python dependencies ...
+python -c "import flask, pandas, sklearn, joblib" >nul 2>nul
+if errorlevel 1 (
+    echo Dependencies missing, installing ...
+    python -m pip install --disable-pip-version-check -r requirements.txt
     if errorlevel 1 (
-        echo [ERROR] Failed to create virtual environment.
-        pause
-        exit /b 1
+        echo Default PyPI failed, trying Tsinghua mirror ...
+        python -m pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+        if errorlevel 1 (
+            echo [ERROR] Dependency installation failed.
+            echo Please check your network and run this file again.
+            pause
+            exit /b 1
+        )
     )
 ) else (
-    echo [1/5] Virtual environment already exists.
-)
-
-call ".venv\Scripts\activate.bat"
-
-echo [2/5] Installing dependencies ...
-python -m pip install --disable-pip-version-check -r requirements.txt
-if errorlevel 1 (
-    echo [ERROR] Dependency installation failed.
-    echo Try the Tsinghua mirror:
-    echo python -m pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-    pause
-    exit /b 1
+    echo Dependencies already installed.
 )
 
 if not exist "data\load_data.csv" (
-    echo [3/5] Generating sample data ...
+    echo [2/4] Generating sample data ...
     python data\generate_data.py
 ) else (
-    echo [3/5] Data file already exists.
+    echo [2/4] Data file already exists.
 )
 
 if not exist "data\grid.db" (
-    echo [4/5] Initializing database ...
+    echo [3/4] Initializing database ...
     python scripts\init_db.py
 ) else (
-    echo [4/5] Database already exists.
+    echo [3/4] Database already exists.
 )
 
-echo [5/5] Training model and detecting anomalies ...
+echo [4/4] Training model and detecting anomalies ...
 python ml\train.py
 if errorlevel 1 (
     echo [ERROR] Model training failed.

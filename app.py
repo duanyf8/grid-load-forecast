@@ -301,8 +301,8 @@ def api_metrics():
 
 if __name__ == "__main__":
     print("=" * 60)
-    print("台区负荷预测与异常用电预警系统")
-    print("请在浏览器打开：http://127.0.0.1:5000")
-    print("按 Ctrl+C 停止服务")
+    print("Grid Load Forecast & Anomaly Monitor")
+    print("Open: http://127.0.0.1:5000")
+    print("Press Ctrl+C to stop")
     print("=" * 60)
     app.run(host="127.0.0.1", port=5000, debug=True, use_reloader=False)

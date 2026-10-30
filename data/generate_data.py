@@ -151,13 +151,13 @@ def main() -> None:
     df.to_csv(DATA_DIR / "load_data.csv", index=False, encoding="utf-8-sig")
 
     print("=" * 60)
-    print("模拟数据生成完成")
-    print(f"台区数量：{df['district_id'].nunique()}")
-    print(f"日期范围：{df['date'].min()} 至 {df['date'].max()}")
-    print(f"负荷记录：{len(df):,} 行（含 30 行重复数据）")
-    print(f"缺失负荷：{df['load_kw'].isna().sum()} 行")
-    print(f"注入异常：{int(df['is_injected_anomaly'].sum())} 行")
-    print(f"输出文件：{DATA_DIR / 'load_data.csv'}")
+    print("Synthetic load data generated")
+    print(f"Districts: {df['district_id'].nunique()}")
+    print(f"Date range: {df['date'].min()} to {df['date'].max()}")
+    print(f"Load rows: {len(df):,} (including 30 duplicated rows)")
+    print(f"Missing load: {df['load_kw'].isna().sum()} rows")
+    print(f"Injected anomalies: {int(df['is_injected_anomaly'].sum())} rows")
+    print(f"Output: {DATA_DIR / 'load_data.csv'}")
     print("=" * 60)
 
 
